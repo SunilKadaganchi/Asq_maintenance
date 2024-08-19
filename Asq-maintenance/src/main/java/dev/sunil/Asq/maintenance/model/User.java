@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity(name="BANK_USER")
 @Getter
 @Setter
@@ -15,6 +17,6 @@ public class User extends BaseModel {
     private long phoneNum;
     @Enumerated(EnumType.STRING)
     private BankType bankType;
-    @OneToOne
-    private Question question;
+    @OneToMany
+    private List<Question> questionsList;
 }

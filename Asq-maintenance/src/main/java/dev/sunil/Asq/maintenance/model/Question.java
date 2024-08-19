@@ -4,12 +4,10 @@ import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity
+@Entity(name="USER_QNA")
 @Getter
 @Setter
-public class Question extends BaseModel{
-    private String quesOne;
-    private String ansOne;
-    private String quesTwo;
-    private String ansTwo;
+public class Question extends BaseModel {
+    private String ques;
+    private String ans;
 }
