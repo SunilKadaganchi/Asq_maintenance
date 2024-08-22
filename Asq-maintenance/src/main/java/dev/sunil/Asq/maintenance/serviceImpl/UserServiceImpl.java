@@ -15,6 +15,11 @@ import dev.sunil.Asq.maintenance.repository.QuestionRepository;
 import dev.sunil.Asq.maintenance.repository.UserRepository;
 import dev.sunil.Asq.maintenance.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -29,12 +34,20 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private QuestionRepository questionRepository;
 
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @Override
     public UserDto register(SignupDto signupDto) {
         Optional<User> user = userRepository.findByEmail(signupDto.getEmail());
         if(user.isPresent()){
             throw new EmailAlreadyExistException("Email Already Exists");
         }
+
+        signupDto.setPassword(bCryptPasswordEncoder.encode(signupDto.getPassword()));
 
         User saveuser = new User();
         saveuser.setName(signupDto.getName());
@@ -47,15 +60,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto login(LoginDto loginDto) {
-       User savedUser = userRepository.findByEmail(loginDto.getEmail()).orElseThrow(
-               ()-> new InvalidCredentialsException("User with the given EmailId not exist"));
+    public String login(LoginDto loginDto) {
+//       User savedUser = userRepository.findByEmail(loginDto.getEmail()).orElseThrow(
+//               ()-> new InvalidCredentialsException("User with the given EmailId not exist"));
+//
+//       if(!savedUser.getPassword().equals(loginDto.getPassword())){
+//           throw new InvalidCredentialsException("Password is Not matching");
+//       }
+        if(loginDto.getEmail()==null || loginDto.getPassword()==null){
+            throw new InvalidCredentialsException("Invalid Credentials...");
+        }
 
-       if(!savedUser.getPassword().equals(loginDto.getPassword())){
-           throw new InvalidCredentialsException("Password is Not matching");
-       }
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginDto.getEmail(),loginDto.getPassword())
+        );
 
-       return UserEntityDtoMapper.convertEntityToDto(savedUser);
+        System.out.println(authentication+"=========");
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+       return "User logged in Successfullly....";
     }
 
     @Override

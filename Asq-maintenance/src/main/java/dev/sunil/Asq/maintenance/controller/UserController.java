@@ -18,13 +18,13 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/signup")
+    @PostMapping("/auth/signup")
     public ResponseEntity<UserDto> signup(@RequestBody SignupDto signupDto){
         return new ResponseEntity<>(userService.register(signupDto),HttpStatus.CREATED);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<UserDto> login(@RequestBody LoginDto loginDto){
+    @PostMapping("/auth/login")
+    public ResponseEntity<String> login(@RequestBody LoginDto loginDto){
         return new ResponseEntity<>(userService.login(loginDto),HttpStatus.OK);
     }
 

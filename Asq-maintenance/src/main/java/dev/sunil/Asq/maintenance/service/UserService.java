@@ -11,7 +11,7 @@ import java.util.UUID;
 public interface UserService {
 
      UserDto register(SignupDto signupDto);
-     UserDto login(LoginDto loginDto);
+     String login(LoginDto loginDto);
      UserDto getUserData(UUID id);
      UserDto addEditQNA(UUID id, QNADto qnaDto);
      UserDto deleteQNA(UUID id);
