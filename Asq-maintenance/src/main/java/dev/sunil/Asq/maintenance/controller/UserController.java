@@ -1,9 +1,6 @@
 package dev.sunil.Asq.maintenance.controller;
 
-import dev.sunil.Asq.maintenance.dto.LoginDto;
-import dev.sunil.Asq.maintenance.dto.QNADto;
-import dev.sunil.Asq.maintenance.dto.SignupDto;
-import dev.sunil.Asq.maintenance.dto.UserDto;
+import dev.sunil.Asq.maintenance.dto.*;
 import dev.sunil.Asq.maintenance.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,8 +21,9 @@ public class UserController {
     }
 
     @PostMapping("/auth/login")
-    public ResponseEntity<String> login(@RequestBody LoginDto loginDto){
-        return new ResponseEntity<>(userService.login(loginDto),HttpStatus.OK);
+    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginDto loginDto){
+        String token = userService.login(loginDto);
+        return ResponseEntity.ok(new LoginResponseDto(token));
     }
 
 

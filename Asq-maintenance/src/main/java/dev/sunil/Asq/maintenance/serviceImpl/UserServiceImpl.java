@@ -13,6 +13,7 @@ import dev.sunil.Asq.maintenance.model.Question;
 import dev.sunil.Asq.maintenance.model.User;
 import dev.sunil.Asq.maintenance.repository.QuestionRepository;
 import dev.sunil.Asq.maintenance.repository.UserRepository;
+import dev.sunil.Asq.maintenance.security.JwtTokenProvider;
 import dev.sunil.Asq.maintenance.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -37,6 +38,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    @Autowired
+    private  JwtTokenProvider jwtTokenProvider;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -78,7 +81,10 @@ public class UserServiceImpl implements UserService {
         System.out.println(authentication+"=========");
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-       return "User logged in Successfullly....";
+        //generate the token using jwttokenprovider
+        String token = jwtTokenProvider.generateToken(authentication);
+
+       return token;
     }
 
     @Override
