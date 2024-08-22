@@ -1,5 +1,6 @@
 package dev.sunil.Asq.maintenance.security;
 
+import dev.sunil.Asq.maintenance.Exception.InvalidToken;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -38,5 +39,16 @@ public class JwtTokenProvider {
                .parseSignedClaims(token).getBody();
 
      return claims.getSubject();
+    }
+
+    public boolean validateToken(String token){
+        try {
+            Jwts.parser().setSigningKey(key).build()
+                    .parseSignedClaims(token);
+            return true;
+        }
+        catch (Exception e){
+            throw new InvalidToken("TOKEN IS Invalid -----");
+        }
     }
 }
