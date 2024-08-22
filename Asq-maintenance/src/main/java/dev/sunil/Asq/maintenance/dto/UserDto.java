@@ -16,5 +16,5 @@ public class UserDto {
     private String email;
     private long phoneNum;
     private BankType bankType;
-    private List<Question> questionsList;
+    private List<QnAResponseDto> questionsList;
 }

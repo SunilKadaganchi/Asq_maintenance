@@ -2,6 +2,7 @@ package dev.sunil.Asq.maintenance.serviceImpl;
 
 import dev.sunil.Asq.maintenance.Exception.EmailAlreadyExistException;
 import dev.sunil.Asq.maintenance.Exception.InvalidCredentialsException;
+import dev.sunil.Asq.maintenance.Exception.InvalidQuesAndAnswerDetails;
 import dev.sunil.Asq.maintenance.Exception.UserNotFoundException;
 import dev.sunil.Asq.maintenance.dto.LoginDto;
 import dev.sunil.Asq.maintenance.dto.QNADto;
@@ -61,7 +62,7 @@ public class UserServiceImpl implements UserService {
     public UserDto getUserData(UUID id) {
         User user = userRepository.findById(id).orElseThrow(
                 ()->new UserNotFoundException("User Not found with Id : "+id));
-        if(user.getQuestionsList().isEmpty()){
+        if(user.getQuestionsList()==null || user.getQuestionsList().isEmpty()){
             user.setQuestionsList(new ArrayList<>());
         }
 
@@ -72,6 +73,13 @@ public class UserServiceImpl implements UserService {
     public UserDto addEditQNA(UUID id, QNADto qnaDto) {
         User user = userRepository.findById(id).orElseThrow(
                 ()->new UserNotFoundException("User Not found with Id : "+id));
+
+        if(qnaDto.getQues1().isEmpty() || qnaDto.getQues1()==null ||
+                qnaDto.getAns1().isEmpty() || qnaDto.getAns1()==null ||
+                qnaDto.getQues2().isEmpty() || qnaDto.getQues2()==null ||
+                qnaDto.getAns2().isEmpty() || qnaDto.getAns2()==null){
+            throw new InvalidQuesAndAnswerDetails("User must contain 2 Question and Answers..");
+        }
 
         Question q1 = new Question();
         q1.setQues(qnaDto.getQues1());
@@ -84,7 +92,7 @@ public class UserServiceImpl implements UserService {
         q2= questionRepository.save(q2);
 
         List<Question> questions = user.getQuestionsList();
-        if(questions.isEmpty()){
+        if(questions==null || questions.isEmpty()){
             questions.add(q1);
             questions.add(q2);
         }

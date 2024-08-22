@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ExceptionDto {
-    private String meesage;
-    private int code;
+public class QnAResponseDto {
+    private  String question;
+    private  String answer;
 }
